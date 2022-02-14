@@ -2,6 +2,7 @@ const express = require("express")
 const {getTopics} = require("./controllers/topics.controllers")
 const {getArticleById, patchArticalById, getAllArticles} = require("./controllers/articles.controllers")
 const {getUsers} = require("./controllers/users.controllers.js")
+const {getCommentsByArticleId} = require("./controllers/comments.controllers")
 const {serverErrorHandler, psqlErrorHandler, customErrorHandler} = require("./controllers/errors.controllers")
 
 const app = express()
@@ -19,6 +20,9 @@ app.patch("/api/articles/:article_id", patchArticalById)
 
 // Users
 app.get("/api/users", getUsers)
+
+// Comments
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId)
 
 // Errors
 
