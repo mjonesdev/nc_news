@@ -7,3 +7,11 @@ exports.fetchArticleById = (id) => {
             return rows[0]
         })
 }
+
+exports.updateArticleById = (id, {inc_votes}) => {
+    return db.query(`UPDATE articles SET votes=votes+$1 WHERE article_id=$2 RETURNING *`, [inc_votes, id])
+        .then(({rows}) => {
+            if (rows.length === 0) return Promise.reject({msg: "No article found with that ID"})
+            return rows[0]
+        })
+}
