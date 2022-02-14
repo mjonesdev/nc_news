@@ -31,3 +31,22 @@ describe("/api/topics", () => {
             })
     })
 })
+
+describe("/api/articles", () => {
+    test("200: returns an object with properties of the article when passed an ID", () => {
+        return request(app).get("/api/articles/1")
+            .expect(200)
+            .then(({body: {article}}) => {
+                console.log(article)
+                expect(article).toEqual(expect.objectContaining({
+                    author: "butter_bridge",
+                    title: "Living in the shadow of a great man",
+                    article_id: 1,
+                    body: "I find this existence challenging",
+                    topic: "mitch",
+                    created_at: expect.any(String),
+                    votes: 100
+                }))
+            })
+    })
+})
