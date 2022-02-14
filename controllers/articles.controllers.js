@@ -12,8 +12,5 @@ exports.patchArticalById = (req, res, next) => {
     const body = req.body
     updateArticleById(id, body).then(article => {
         res.status(200).send({article})
-    }).catch(err => {
-        console.log(err)
-        next(err)
-    })
+    }).catch(next)
 }
