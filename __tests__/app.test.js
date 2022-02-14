@@ -31,3 +31,36 @@ describe("/api/topics", () => {
             })
     })
 })
+
+describe("/api/articles", () => {
+    test("200: returns an object with properties of the article when passed an ID", () => {
+        return request(app).get("/api/articles/1")
+            .expect(200)
+            .then(({body: {article}}) => {
+                console.log(article)
+                expect(article).toEqual(expect.objectContaining({
+                    author: "butter_bridge",
+                    title: "Living in the shadow of a great man",
+                    article_id: 1,
+                    body: "I find this existence challenging",
+                    topic: "mitch",
+                    created_at: expect.any(String),
+                    votes: 100
+                }))
+            })
+    })
+    test("400: bad request response when passing an article ID that is not a number", () => {
+        return request(app).get("/api/articles/notANumber")
+            .expect(400)
+            .then(({body}) => {
+                expect(body.msg).toBe("Article ID passed not a number")
+            })
+    })
+    test("404: should return an article not found msg when passed a number that is not an article ID", () => {
+        return request(app).get("/api/articles/50")
+            .expect(404)
+            .then(({body}) => {
+                expect(body.msg).toBe("No article found with that ID")
+            })
+    })
+})
