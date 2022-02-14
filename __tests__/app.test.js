@@ -64,3 +64,21 @@ describe("/api/articles", () => {
             })
     })
 })
+
+describe("/api/users", () => {
+    describe("GET", () => {
+        test("200: get back an array of objects", () => {
+            return request(app).get("/api/users")
+                .expect(200)
+                .then(({body: {users}}) => {
+                    expect(users).toHaveLength(4)
+                    users.forEach(user => {
+                        expect.objectContaining({
+                            username: expect.any(String)
+                        })
+                    })
+                    expect(users[0]).toEqual({username: 'butter_bridge'})
+                })
+        })
+    })
+})
