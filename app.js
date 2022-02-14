@@ -17,8 +17,5 @@ app.all("/*", (req, res) => {
 
 app.use(serverErrorHandler)
 
-app.listen(9090, () => {
-    console.log("Listening on server 9090")
-});
 
 module.exports = app
