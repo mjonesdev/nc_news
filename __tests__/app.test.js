@@ -78,6 +78,25 @@ describe("/api/articles", () => {
                         comment_count: 11
                     }))
             })
+        test("200: returns all articles in decending date order", () => {
+            return request(app).get("/api/articles")
+                .expect(200)
+                .then(({body: {articles}}) => {
+                    expect(articles).toHaveLength(12)
+                    articles.forEach(article => {
+                        expect(article).toEqual(expect.objectContaining({
+                            author: expect.any(String),
+                            title: expect.any(String),
+                            article_id: expect.any(Number),
+                            topic: expect.any(String),
+                            created_at: expect.any(String),
+                            votes: expect.any(Number)
+                        }))
+                    })
+                    expect(articles).toBeSortedBy('created_at', {
+                        descending: true,
+                    });
+                })
         })
     })
     describe("PATCH", () => {
