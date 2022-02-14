@@ -38,7 +38,6 @@ describe("/api/articles", () => {
             return request(app).get("/api/articles/1")
                 .expect(200)
                 .then(({body: {article}}) => {
-                    console.log(article)
                     expect(article).toEqual(expect.objectContaining({
                         author: "butter_bridge",
                         title: "Living in the shadow of a great man",
@@ -63,6 +62,22 @@ describe("/api/articles", () => {
                 .then(({body}) => {
                     expect(body.msg).toBe("No article found with that ID")
                 })
+        })
+        test("200: returns the previous object but with the addition of a comment_count property", () => {
+            return request(app).get("/api/articles/1")
+                .expect(200)
+                .then(({body: {article}}) => {
+                    expect(article).toEqual(expect.objectContaining({
+                        author: "butter_bridge",
+                        title: "Living in the shadow of a great man",
+                        article_id: 1,
+                        body: "I find this existence challenging",
+                        topic: "mitch",
+                        created_at: expect.any(String),
+                        votes: 100,
+                        comment_count: 11
+                    }))
+            })
         })
     })
     describe("PATCH", () => {
