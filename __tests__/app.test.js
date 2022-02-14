@@ -49,4 +49,18 @@ describe("/api/articles", () => {
                 }))
             })
     })
+    test("400: bad request response when passing an article ID that is not a number", () => {
+        return request(app).get("/api/articles/notANumber")
+            .expect(400)
+            .then(({body}) => {
+                expect(body.msg).toBe("Article ID passed not a number")
+            })
+    })
+    test("404: should return an article not found msg when passed a number that is not an article ID", () => {
+        return request(app).get("/api/articles/50")
+            .expect(404)
+            .then(({body}) => {
+                expect(body.msg).toBe("No article found with that ID")
+            })
+    })
 })
