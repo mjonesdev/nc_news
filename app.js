@@ -1,6 +1,6 @@
 const express = require("express")
 const {getTopics} = require("./controllers/topics.controllers")
-const {getArticleById, patchArticalById} = require("./controllers/articles.controllers")
+const {getArticleById, patchArticalById, getAllArticles} = require("./controllers/articles.controllers")
 const {serverErrorHandler, psqlErrorHandler, customErrorHandler} = require("./controllers/errors.controllers")
 
 const app = express()
@@ -11,6 +11,7 @@ app.use(express.json())
 app.get("/api/topics", getTopics)
 
 // Articles
+app.get("/api/articles", getAllArticles)
 app.get("/api/articles/:article_id", getArticleById)
 app.patch("/api/articles/:article_id", patchArticalById)
 

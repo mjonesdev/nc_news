@@ -1,5 +1,12 @@
 const db = require('../db/connection');
 
+exports.fetchAllArticles = () => {
+    return db.query(`SELECT author, title, article_id, topic, created_at, votes
+                    FROM articles
+                    ORDER BY created_at desc;`)
+        .then(({rows}) => rows)
+}
+
 exports.fetchArticleById = (id) => {
     return db.query("SELECT * FROM articles WHERE article_id=$1;", [id])
         .then(({rows}) => {
