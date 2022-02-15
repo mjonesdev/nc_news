@@ -16,19 +16,16 @@ exports.fetchArticleById = (id) => {
                      WHERE article_id = $1
                      GROUP BY articles.article_id;`, [id])
         .then(({rows}) => {
-            if (rows.length === 0) return Promise.reject({msg: "No article found with that ID"})
+            if (rows.length === 0) return Promise.reject({msg: "Resource not found"})
             rows[0].comment_count = Number(rows[0].comment_count)
             return rows[0]
         })
 }
 
 exports.updateArticleById = (id, {inc_votes}) => {
-    return db.query(`UPDATE articles
-                     SET votes=votes + $1
-                     WHERE article_id = $2
-                     RETURNING *`, [inc_votes, id])
+    return db.query(`UPDATE articles SET votes=votes+$1 WHERE article_id=$2 RETURNING *;`, [inc_votes, id])
         .then(({rows}) => {
-            if (rows.length === 0) return Promise.reject({msg: "No article found with that ID"})
+            if (rows.length === 0) return Promise.reject({msg: "Resource not found"})
             return rows[0]
         })
 }
