@@ -60,7 +60,7 @@ describe("/api/articles", () => {
             return request(app).get("/api/articles/50")
                 .expect(404)
                 .then(({body}) => {
-                    expect(body.msg).toBe("No article found with that ID")
+                    expect(body.msg).toBe("Resource not found")
                 })
         })
         test("200: returns all articles in decending date order", () => {
@@ -134,7 +134,7 @@ describe("/api/articles", () => {
                 .send(data)
                 .expect(404)
                 .then(({body}) => {
-                    expect(body.msg).toBe("No article found with that ID")
+                    expect(body.msg).toBe("Resource not found")
             })
         })
     })
@@ -169,7 +169,7 @@ describe('/api/articles/:article_id/comments', () => {
             return request(app).get('/api/articles/50/comments')
                 .expect(404)
                 .then(({body}) => {
-                    expect(body.msg).toBe("No article found with that ID")
+                    expect(body.msg).toBe("Resource not found")
                 })
         })
         test("200: should return an empty array if there are no comments on an existing article", () => {
