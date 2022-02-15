@@ -251,6 +251,11 @@ describe('/api/articles/:article_id/comments', () => {
                 .expect(204)
                 .then(({body}) => {
                     expect(body).toEqual({})
+                    return request(app).get("/api/articles/9/comments")
+                        .expect(200)
+                })
+                .then(({body: {comments}}) => {
+                    expect(comments).toHaveLength(1)
                 })
         })
         test('404: returns a resource not found when passed a comment ID that does not exist', () => {
