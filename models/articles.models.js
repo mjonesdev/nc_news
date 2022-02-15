@@ -1,12 +1,20 @@
 const db = require('../db/connection');
 
-exports.fetchAllArticles = () => {
-    return db.query(`SELECT a.author, a.title, a.article_id, a.topic, a.created_at, a.votes, COUNT(comment_id) AS comment_count
-                    FROM articles AS a 
-                        LEFT JOIN comments USING (article_id)
-                    GROUP BY a.article_id 
-                    ORDER BY created_at desc;`)
-        .then(({rows}) => rows)
+exports.fetchAllArticles = (sorted_by = "created_at", order = "desc", topic) => {
+    if (["author", "title", "article_id", "topic", "created_at", "votes"].includes(sorted_by) && ['desc', 'asc'].includes(order)) {
+        const queryValues = []
+        let queryString = 'SELECT a.author, a.title, a.article_id, a.topic, a.created_at, a.votes, COUNT(comment_id) AS comment_count FROM articles AS a LEFT JOIN comments USING (article_id)'
+        if (topic) {
+            queryValues.push(topic)
+            queryString += 'WHERE topic=$1 '
+        }
+        queryString += `GROUP BY a.article_id ORDER BY ${sorted_by} ${order};`
+        return db.query(queryString, queryValues)
+            .then(({rows}) => rows)
+    } else {
+        return Promise.reject({msg: "Incorrect query received"})
+    }
+
 }
 
 exports.fetchArticleById = (id) => {

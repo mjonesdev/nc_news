@@ -112,6 +112,54 @@ describe("/api/articles", () => {
                     })
                 })
         })
+        test("200: returns the articles sorted by the passed query, defaulting to date", () => {
+            return request(app).get("/api/articles?sorted_by=votes")
+                .expect(200)
+                .then(({body: {articles}}) => {
+                    expect(articles).toBeSortedBy('votes', {
+                        descending: true
+                    })
+                })
+        })
+        test("400: returns a bad request msg when passed a column title that does not exist", () => {
+            return request(app).get("/api/articles?sorted_by=notAColumn")
+                .expect(400)
+                .then(({body}) => {
+                    expect(body.msg).toBe("Incorrect query received")
+                })
+        })
+        test("200: returns the articles back ordered either desc or asc per passed query, default to desc", () => {
+            return request(app).get("/api/articles?order=asc")
+                .expect(200)
+                .then(({body: {articles}}) => {
+                    expect(articles).toBeSortedBy("created_at")
+                })
+        })
+        test("400: returns a bad reequest when passed an incorrect order query", () => {
+            return request(app).get("/api/articles?order=notAnOrderOption")
+                .expect(400)
+                .then(({body}) => {
+                    expect(body.msg).toBe("Incorrect query received")
+                })
+        })
+        test("200: returns the articles filtered by the topic property passed on a query", () => {
+            return request(app).get("/api/articles?topic=mitch")
+                .expect(200)
+                .then(({body: {articles}}) => {
+                    articles.forEach(article => {
+                        expect(article).toEqual(expect.objectContaining({
+                            topic: "mitch"
+                        }))
+                    })
+                })
+        })
+        test("404: returns a err msg stating the resource is not found when passed a topic that does not exist", () => {
+            return request(app).get("/api/articles?topic=notAKnownTopic")
+                .expect(404)
+                .then(({body}) => {
+                    expect(body.msg).toBe("Resource not found")
+                })
+        })
         describe("PATCH", () => {
             test("200: should return the updated object when passed a positive number", () => {
                 const data = {inc_votes: 1}
@@ -162,7 +210,7 @@ describe("/api/articles", () => {
                     .send(data)
                     .expect(404)
                     .then(({body}) => {
-                        expect(body.msg).toBe("No article found with that ID")
+                        expect(body.msg).toBe("Resource not found")
                     })
             })
         })

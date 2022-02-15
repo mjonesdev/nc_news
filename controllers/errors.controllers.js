@@ -1,5 +1,6 @@
 exports.customErrorHandler = (err, req, res, next) => {
     if (err.msg === "Resource not found") res.status(404).send(err)
+    if (err.msg === "Incorrect query received") res.status(400).send(err)
     else next(err)
 }
 
