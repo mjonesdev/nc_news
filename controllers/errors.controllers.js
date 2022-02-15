@@ -4,7 +4,7 @@ exports.customErrorHandler = (err, req, res, next) => {
 }
 
 exports.psqlErrorHandler = (err, req, res, next) => {
-    if (err.code === '22P02') res.status(400).send({msg: "Article ID passed not a number"})
+    if (err.code === '22P02') res.status(400).send({msg: "ID passed not a number"})
     if (err.code === '23502') res.status(400).send({msg: "Bad request: required data not supplied correctly"})
     else next(err)
 }
