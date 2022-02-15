@@ -1,5 +1,5 @@
 exports.customErrorHandler = (err, req, res, next) => {
-    if (err.msg === "No article found with that ID") res.status(404).send(err)
+    if (err.msg === "Resource not found") res.status(404).send(err)
     else next(err)
 }
 

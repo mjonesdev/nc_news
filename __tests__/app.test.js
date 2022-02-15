@@ -3,6 +3,7 @@ const app = require("../app");
 const connection = require("../db/connection");
 const seed = require('../db/seeds/seed');
 const testData = require('../db/data/test-data/index');
+const {checkExists} = require("../db/helpers/utils")
 
 beforeEach(() => seed(testData));
 afterAll(() => connection.end());
@@ -60,7 +61,7 @@ describe("/api/articles", () => {
             return request(app).get("/api/articles/50")
                 .expect(404)
                 .then(({body}) => {
-                    expect(body.msg).toBe("No article found with that ID")
+                    expect(body.msg).toBe("Resource not found")
                 })
         })
         test("200: returns the previous object but with the addition of a comment_count property", () => {
@@ -149,11 +150,53 @@ describe("/api/articles", () => {
                 .send(data)
                 .expect(404)
                 .then(({body}) => {
-                    expect(body.msg).toBe("No article found with that ID")
+                    expect(body.msg).toBe("Resource not found")
             })
         })
     })
 })
+
+describe('/api/articles/:article_id/comments', () => {
+    describe('GET', () => {
+        test("200: should respond with an array of the comments for the article with the passed ID", () => {
+            return request(app).get('/api/articles/1/comments')
+                .expect(200)
+                .then(({body: {comments}}) => {
+                    expect(comments).toHaveLength(11)
+                    comments.forEach(comment => {
+                        expect(comment).toEqual(expect.objectContaining({
+                            comment_id: expect.any(Number),
+                            body: expect.any(String),
+                            votes: expect.any(Number),
+                            author: expect.any(String),
+                            created_at: expect.any(String),
+                        }))
+                    })
+                })
+        })
+        test("400: should return a bad request response when passed an ID that is not a number", () => {
+            return request(app).get('/api/articles/notANumber/comments')
+                .expect(400)
+                .then(({body}) => {
+                    expect(body.msg).toBe("Article ID passed not a number")
+                })
+        })
+        test("404: should return an article does not exist message if passed an ID that is not in use", () => {
+            return request(app).get('/api/articles/50/comments')
+                .expect(404)
+                .then(({body}) => {
+                    expect(body.msg).toBe("Resource not found")
+                })
+        })
+        test("200: should return an empty array if there are no comments on an existing article", () => {
+            return request(app).get('/api/articles/2/comments')
+                .expect(200)
+                .then(({body: {comments}}) => {
+                    expect(comments.length === 0)
+                })
+        })
+    });
+});
 
 describe("/api/users", () => {
     describe("GET", () => {
@@ -170,5 +213,18 @@ describe("/api/users", () => {
                     expect(users[0]).toEqual({username: 'butter_bridge'})
                 })
         })
+    })
+})
+
+describe("database utilities", () => {
+    test("404: should return a not found error msg when value not found in the passed table's column", () => {
+        return checkExists("articles", "article_id", 50)
+            .catch(error => {
+                expect(error.msg).toBe("Resource not found")
+            })
+    })
+    test("200: returns a successful promise when the element is found", () => {
+        return checkExists("articles", "article_id", 1)
+            .then(response => response)
     })
 })
