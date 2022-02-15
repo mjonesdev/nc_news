@@ -64,6 +64,21 @@ describe("/api/articles", () => {
                     expect(body.msg).toBe("Resource not found")
                 })
         })
+        test("200: returns the previous object but with the addition of a comment_count property", () => {
+            return request(app).get("/api/articles/1")
+                .expect(200)
+                .then(({body: {article}}) => {
+                    expect(article).toEqual(expect.objectContaining({
+                        author: "butter_bridge",
+                        title: "Living in the shadow of a great man",
+                        article_id: 1,
+                        body: "I find this existence challenging",
+                        topic: "mitch",
+                        created_at: expect.any(String),
+                        votes: 100,
+                        comment_count: 11
+                    }))
+            })
         test("200: returns all articles in decending date order", () => {
             return request(app).get("/api/articles")
                 .expect(200)

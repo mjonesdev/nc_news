@@ -8,9 +8,14 @@ exports.fetchAllArticles = () => {
 }
 
 exports.fetchArticleById = (id) => {
-    return db.query("SELECT * FROM articles WHERE article_id=$1;", [id])
+    return db.query(`SELECT articles.*, COUNT(comment_id) AS comment_count
+                     FROM articles
+                              LEFT JOIN comments USING (article_id)
+                     WHERE article_id = $1
+                     GROUP BY articles.article_id;`, [id])
         .then(({rows}) => {
             if (rows.length === 0) return Promise.reject({msg: "Resource not found"})
+            rows[0].comment_count = Number(rows[0].comment_count)
             return rows[0]
         })
 }
