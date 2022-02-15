@@ -1,8 +1,10 @@
 const db = require('../db/connection');
 
 exports.fetchAllArticles = () => {
-    return db.query(`SELECT author, title, article_id, topic, created_at, votes
-                    FROM articles
+    return db.query(`SELECT a.author, a.title, a.article_id, a.topic, a.created_at, a.votes, COUNT(comment_id) AS comment_count
+                    FROM articles AS a 
+                        LEFT JOIN comments USING (article_id)
+                    GROUP BY a.article_id 
                     ORDER BY created_at desc;`)
         .then(({rows}) => rows)
 }
