@@ -210,7 +210,7 @@ describe('/api/articles/:article_id/comments', () => {
         })
     });
     describe('POST', () => {
-        test("200: should add a commment into the comments table with the article ID passed", () => {
+        test("201: should add a commment into the comments table with the article ID passed", () => {
             const data = {username: 'butter_bridge', body: "testComment"}
             return request(app).post('/api/articles/2/comments')
                 .send(data)
