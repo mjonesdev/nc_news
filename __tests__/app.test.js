@@ -78,7 +78,8 @@ describe("/api/articles", () => {
                         votes: 100,
                         comment_count: 11
                     }))
-            })
+                })
+        })
         test("200: returns all articles in decending date order", () => {
             return request(app).get("/api/articles")
                 .expect(200)
@@ -99,58 +100,70 @@ describe("/api/articles", () => {
                     });
                 })
         })
-    })
-    describe("PATCH", () => {
-        test("200: should return the updated object when passed a positive number", () => {
-            const data = { inc_votes: 1 }
-            return request(app).patch("/api/articles/1")
-                .send(data)
+        test("200: returns an object with the comments_count now included in the properties of the article", () => {
+            return request(app).get("/api/articles")
                 .expect(200)
-                .then(({body: {article}}) => {
-                    expect(article).toEqual(expect.objectContaining({
-                        author: "butter_bridge",
-                        title: "Living in the shadow of a great man",
-                        article_id: 1,
-                        body: "I find this existence challenging",
-                        topic: "mitch",
-                        created_at: expect.any(String),
-                        votes: 101
-                    }))
+                .then(({body: {articles}}) => {
+                    expect(articles).toHaveLength(12)
+                    articles.forEach(article => {
+                        expect(article).toEqual(expect.objectContaining({
+                            comment_count: expect.any(String)
+                        }))
+                    })
                 })
         })
-        test("200: should return the updated object when passed a negative number", () => {
-            const data = { inc_votes: -2 }
-            return request(app).patch("/api/articles/1")
-                .send(data)
-                .expect(200)
-                .then(({body: {article}}) => {
-                    expect(article).toEqual(expect.objectContaining({
-                        author: "butter_bridge",
-                        title: "Living in the shadow of a great man",
-                        article_id: 1,
-                        body: "I find this existence challenging",
-                        topic: "mitch",
-                        created_at: expect.any(String),
-                        votes: 98
-                    }))
-                })
-        })
-        test("400: should send back a bad request message when passed body information that does not include the required information", () => {
-            const data = {notTheRightKey: "test"}
-            return request(app).patch("/api/articles/1")
-                .send(data)
-                .expect(400)
-                .then(({body}) => {
-                    expect(body.msg).toBe("Bad request: required data not supplied correctly")
-                })
-        })
-        test("404: return that the article has not been found if passed correct data but an ID that does not exist in the database", () => {
-            const data = { inc_votes: 1 }
-            return request(app).patch("/api/articles/50")
-                .send(data)
-                .expect(404)
-                .then(({body}) => {
-                    expect(body.msg).toBe("Resource not found")
+        describe("PATCH", () => {
+            test("200: should return the updated object when passed a positive number", () => {
+                const data = {inc_votes: 1}
+                return request(app).patch("/api/articles/1")
+                    .send(data)
+                    .expect(200)
+                    .then(({body: {article}}) => {
+                        expect(article).toEqual(expect.objectContaining({
+                            author: "butter_bridge",
+                            title: "Living in the shadow of a great man",
+                            article_id: 1,
+                            body: "I find this existence challenging",
+                            topic: "mitch",
+                            created_at: expect.any(String),
+                            votes: 101
+                        }))
+                    })
+            })
+            test("200: should return the updated object when passed a negative number", () => {
+                const data = {inc_votes: -2}
+                return request(app).patch("/api/articles/1")
+                    .send(data)
+                    .expect(200)
+                    .then(({body: {article}}) => {
+                        expect(article).toEqual(expect.objectContaining({
+                            author: "butter_bridge",
+                            title: "Living in the shadow of a great man",
+                            article_id: 1,
+                            body: "I find this existence challenging",
+                            topic: "mitch",
+                            created_at: expect.any(String),
+                            votes: 98
+                        }))
+                    })
+            })
+            test("400: should send back a bad request message when passed body information that does not include the required information", () => {
+                const data = {notTheRightKey: "test"}
+                return request(app).patch("/api/articles/1")
+                    .send(data)
+                    .expect(400)
+                    .then(({body}) => {
+                        expect(body.msg).toBe("Bad request: required data not supplied correctly")
+                    })
+            })
+            test("404: return that the article has not been found if passed correct data but an ID that does not exist in the database", () => {
+                const data = {inc_votes: 1}
+                return request(app).patch("/api/articles/50")
+                    .send(data)
+                    .expect(404)
+                    .then(({body}) => {
+                        expect(body.msg).toBe("No article found with that ID")
+                    })
             })
         })
     })
