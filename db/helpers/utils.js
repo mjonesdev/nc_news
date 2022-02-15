@@ -28,7 +28,7 @@ exports.checkExists = (table, column, value) => {
     return db.query(format('SELECT * FROM %I WHERE %I = $1;', table, column), [value])
         .then(({rows}) => {
             if (!rows.length) {
-                return Promise.reject({ status: 404, msg: 'Resource not found' });
+                return Promise.reject({status: "003", msg: `${value} not found in ${column}` });
             }
         })
 }

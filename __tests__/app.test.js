@@ -54,14 +54,14 @@ describe("/api/articles", () => {
             return request(app).get("/api/articles/notANumber")
                 .expect(400)
                 .then(({body}) => {
-                    expect(body.msg).toBe("Article ID passed not a number")
+                    expect(body.msg).toBe("Article ID passed is not a number")
                 })
         })
         test("404: should return an article not found msg when passed a number that is not an article ID", () => {
             return request(app).get("/api/articles/50")
                 .expect(404)
                 .then(({body}) => {
-                    expect(body.msg).toBe("Resource not found")
+                    expect(body.msg).toBe("Article ID passed is not a number")
                 })
         })
         test("200: returns the previous object but with the addition of a comment_count property", () => {
@@ -125,7 +125,7 @@ describe("/api/articles", () => {
             return request(app).get("/api/articles?sorted_by=notAColumn")
                 .expect(400)
                 .then(({body}) => {
-                    expect(body.msg).toBe("Incorrect query received")
+                    expect(body.msg).toBe("sorted_by and/or order query not valid")
                 })
         })
         test("200: returns the articles back ordered either desc or asc per passed query, default to desc", () => {
@@ -139,7 +139,7 @@ describe("/api/articles", () => {
             return request(app).get("/api/articles?order=notAnOrderOption")
                 .expect(400)
                 .then(({body}) => {
-                    expect(body.msg).toBe("Incorrect query received")
+                    expect(body.msg).toBe("sorted_by and/or order query not valid")
                 })
         })
         test("200: returns the articles filtered by the topic property passed on a query", () => {
@@ -157,7 +157,7 @@ describe("/api/articles", () => {
             return request(app).get("/api/articles?topic=notAKnownTopic")
                 .expect(404)
                 .then(({body}) => {
-                    expect(body.msg).toBe("Resource not found")
+                    expect(body.msg).toBe("notAKnownTopic not found in topic")
                 })
         })
         describe("PATCH", () => {
@@ -210,7 +210,7 @@ describe("/api/articles", () => {
                     .send(data)
                     .expect(404)
                     .then(({body}) => {
-                        expect(body.msg).toBe("Resource not found")
+                        expect(body.msg).toBe("Article not found")
                     })
             })
         })
@@ -239,14 +239,14 @@ describe('/api/articles/:article_id/comments', () => {
             return request(app).get('/api/articles/notANumber/comments')
                 .expect(400)
                 .then(({body}) => {
-                    expect(body.msg).toBe("Article ID passed not a number")
+                    expect(body.msg).toBe("Article ID passed is not a number")
                 })
         })
         test("404: should return an article does not exist message if passed an ID that is not in use", () => {
             return request(app).get('/api/articles/50/comments')
                 .expect(404)
                 .then(({body}) => {
-                    expect(body.msg).toBe("Resource not found")
+                    expect(body.msg).toBe("50 not found in article_id")
                 })
         })
         test("200: should return an empty array if there are no comments on an existing article", () => {
@@ -281,7 +281,7 @@ describe("database utilities", () => {
     test("404: should return a not found error msg when value not found in the passed table's column", () => {
         return checkExists("articles", "article_id", 50)
             .catch(error => {
-                expect(error.msg).toBe("Resource not found")
+                expect(error.msg).toBe("50 not found in article_id")
             })
     })
     test("200: returns a successful promise when the element is found", () => {
