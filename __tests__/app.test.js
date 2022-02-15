@@ -209,6 +209,42 @@ describe('/api/articles/:article_id/comments', () => {
                 })
         })
     });
+    describe('POST', () => {
+        test("200: should add a commment into the comments table with the article ID passed", () => {
+            const data = {username: 'butter_bridge', body: "testComment"}
+            return request(app).post('/api/articles/2/comments')
+                .send(data)
+                .expect(201)
+                .then(({body: {comment}}) => {
+                    expect(comment).toEqual(expect.objectContaining({
+                        comment_id: expect.any(Number),
+                        body: "testComment",
+                        votes: 0,
+                        author: 'butter_bridge',
+                        article_id: 2,
+                        created_at: expect.any(String)})
+                    )
+                })
+        })
+        test("400: should return a bad request error when not passed with all the required properties", () => {
+            const data = {notTheRightPerameter: "hello"}
+            return request(app).post("/api/articles/2/comments")
+                .send(data)
+                .expect(400)
+                .then(({body}) => {
+                    expect(body.msg).toBe("Bad request: required data not supplied correctly")
+                })
+        })
+        test('400: should return a resource not found error msg when passed an article ID that does not exist in the table', () => {
+            const data = {username: 'butter_bridge', body: "testComment"}
+            return request(app).post("/api/articles/50/comments")
+                .send(data)
+                .expect(404)
+                .then(({body}) => {
+                    expect(body.msg).toBe("Resource not found")
+                })
+        })
+    })
 });
 
 describe("/api/users", () => {

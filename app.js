@@ -2,7 +2,7 @@ const express = require("express")
 const {getTopics} = require("./controllers/topics.controllers")
 const {getArticleById, patchArticalById, getAllArticles} = require("./controllers/articles.controllers")
 const {getUsers} = require("./controllers/users.controllers.js")
-const {getCommentsByArticleId} = require("./controllers/comments.controllers")
+const {getCommentsByArticleId, postComment} = require("./controllers/comments.controllers")
 const {serverErrorHandler, psqlErrorHandler, customErrorHandler} = require("./controllers/errors.controllers")
 
 const app = express()
@@ -23,6 +23,7 @@ app.get("/api/users", getUsers)
 
 // Comments
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId)
+app.post("/api/articles/:article_id/comments", postComment)
 
 // Errors
 
