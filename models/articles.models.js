@@ -6,7 +6,10 @@ exports.fetchAllArticles = () => {
                         LEFT JOIN comments USING (article_id)
                     GROUP BY a.article_id 
                     ORDER BY created_at desc;`)
-        .then(({rows}) => rows)
+        .then(({rows}) => {
+            rows.forEach(article => article.comment_count = Number(article.comment_count))
+            return rows
+        })
 }
 
 exports.fetchArticleById = (id) => {

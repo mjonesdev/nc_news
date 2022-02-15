@@ -107,7 +107,7 @@ describe("/api/articles", () => {
                     expect(articles).toHaveLength(12)
                     articles.forEach(article => {
                         expect(article).toEqual(expect.objectContaining({
-                            comment_count: expect.any(String)
+                            comment_count: expect.any(Number)
                         }))
                     })
                 })
@@ -162,7 +162,7 @@ describe("/api/articles", () => {
                     .send(data)
                     .expect(404)
                     .then(({body}) => {
-                        expect(body.msg).toBe("No article found with that ID")
+                        expect(body.msg).toBe("Resource not found")
                     })
             })
         })
