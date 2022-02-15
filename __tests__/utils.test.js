@@ -1,16 +1,8 @@
-const request = require("supertest");
-const connection = require("../db/connection");
-const seed = require('../db/seeds/seed');
-const testData = require('../db/data/test-data/index');
 const {
     convertTimestampToDate,
     createRef,
     formatComments,
-    checkExists
 } = require("../db/helpers/utils");
-
-beforeEach(() => seed(testData));
-afterAll(() => connection.end());
 
 describe("convertTimestampToDate", () => {
     test("returns a new object", () => {
@@ -110,16 +102,3 @@ describe("formatComments", () => {
         expect(formattedComments[0].created_at).toEqual(new Date(timestamp));
     });
 });
-
-describe("database utilities", () => {
-    test("404: should return a not found error msg when value not found in the passed table's column", () => {
-        return checkExists("articles", "article_id", 50)
-            .catch(error => {
-                expect(error.msg).toBe("Resource not found")
-            })
-    })
-    test("200: returns a successful promise when the element is found", () => {
-        return checkExists("articles", "article_id", 1)
-            .then(response => response)
-    })
-})
