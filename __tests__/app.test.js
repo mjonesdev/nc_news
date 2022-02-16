@@ -293,6 +293,17 @@ describe("/api/users", () => {
     })
 })
 
+describe("/api", () => {
+    test("200: returns a JSON object listing the available endpoints", () => {
+        return request(app).get("/api")
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .then(({body}) => {
+                expect(body["GET /api"]).toBeDefined()
+            })
+    })
+})
+
 describe("database utilities", () => {
     test("404: should return a not found error msg when value not found in the passed table's column", () => {
         return checkExists("articles", "article_id", 50)
