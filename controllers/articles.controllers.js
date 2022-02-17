@@ -30,7 +30,7 @@ exports.getArticleById = (req, res, next) => {
     }).catch(next)
 }
 
-exports.patchArticalById = (req, res, next) => {
+exports.patchArticleById = (req, res, next) => {
     const id = req.params.article_id
     const body = req.body
     updateArticleById(id, body).then(article => {
