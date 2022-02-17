@@ -61,7 +61,7 @@ describe("/api/articles", () => {
             return request(app).get("/api/articles/50")
                 .expect(404)
                 .then(({body}) => {
-                    expect(body.msg).toBe("Article ID passed is not a number")
+                    expect(body.msg).toBe("50 not found in article_id")
                 })
         })
         test("200: returns the previous object but with the addition of a comment_count property", () => {
@@ -135,7 +135,7 @@ describe("/api/articles", () => {
                     expect(articles).toBeSortedBy("created_at")
                 })
         })
-        test("400: returns a bad reequest when passed an incorrect order query", () => {
+        test("400: returns a bad request when passed an incorrect order query", () => {
             return request(app).get("/api/articles?order=notAnOrderOption")
                 .expect(400)
                 .then(({body}) => {

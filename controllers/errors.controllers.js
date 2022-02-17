@@ -1,17 +1,10 @@
 exports.customErrorHandler = (err, req, res, next) => {
-    const errorReference404 = {
-        "001": "Reasource not found",
-        "002": "Article ID passed is not a number",
-        "003": "custom message received from error itself",
-        "004": "Article not found"
+    const errorReference = {
+        "001": "Article not found",
+        "051": "sorted_by and/or order query not valid"
     }
-    const errorReference400 = {
-        "101": "incorrect query recieved",
-        "102": "sorted_by and/or order query not valid"
-    }
-    if(err.status === "003") res.status(404).send({msg: err.msg})
-    else if (err.status in errorReference404) res.status(404).send({msg: errorReference404[err.status]})
-    if (err.status in errorReference400) res.status(400).send({msg: errorReference400[err.status]})
+    if(err.msg) res.status(404).send({msg: err.msg})
+    if (err.status) res.status(Number(err.status) < 50 ? 404 : 400).send({msg: errorReference[err.status]})
     else next(err)
 }
 
