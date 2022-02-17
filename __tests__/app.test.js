@@ -107,7 +107,7 @@ describe("/api/articles", () => {
                     expect(articles).toHaveLength(12)
                     articles.forEach(article => {
                         expect(article).toEqual(expect.objectContaining({
-                            comment_count: expect.any(String)
+                            comment_count: expect.any(Number)
                         }))
                     })
                 })
@@ -257,6 +257,70 @@ describe('/api/articles/:article_id/comments', () => {
                 })
         })
     });
+    describe('POST', () => {
+        test("201: should add a commment into the comments table with the article ID passed", () => {
+            const data = {username: 'butter_bridge', body: "testComment"}
+            return request(app).post('/api/articles/2/comments')
+                .send(data)
+                .expect(201)
+                .then(({body: {comment}}) => {
+                    expect(comment).toEqual(expect.objectContaining({
+                        comment_id: expect.any(Number),
+                        body: "testComment",
+                        votes: 0,
+                        author: 'butter_bridge',
+                        article_id: 2,
+                        created_at: expect.any(String)})
+                    )
+                })
+        })
+        test("400: should return a bad request error when not passed with all the required properties", () => {
+            const data = {notTheRightPerameter: "hello"}
+            return request(app).post("/api/articles/2/comments")
+                .send(data)
+                .expect(400)
+                .then(({body}) => {
+                    expect(body.msg).toBe("Bad request: required data not supplied correctly")
+                })
+        })
+        test('404: should return a resource not found error msg when passed an article ID that does not exist in the table', () => {
+            const data = {username: 'butter_bridge', body: "testComment"}
+            return request(app).post("/api/articles/50/comments")
+                .send(data)
+                .expect(404)
+                .then(({body}) => {
+                    expect(body.msg).toBe("Resource not found")
+                })
+        })
+    })
+    describe('DELETE', () => {
+        test('204: deletes the comment with the passed ID', () => {
+            return request(app).delete("/api/comments/1")
+                .expect(204)
+                .then(({body}) => {
+                    expect(body).toEqual({})
+                    return request(app).get("/api/articles/9/comments")
+                        .expect(200)
+                })
+                .then(({body: {comments}}) => {
+                    expect(comments).toHaveLength(1)
+                })
+        })
+        test('404: returns a resource not found when passed a comment ID that does not exist', () => {
+            return request(app).delete("/api/comments/50")
+                .expect(404)
+                .then(({body}) => {
+                    expect(body.msg).toBe("Resource not found")
+                })
+        })
+        test("400: returns a bad request msg when passed a comment_id that is not a number", () => {
+            return request(app).delete("/api/comments/notANumber")
+                .expect(400)
+                .then(({body}) => {
+                    expect(body.msg).toBe("ID passed not a number")
+                })
+        })
+    })
 });
 
 describe("/api/users", () => {
@@ -274,6 +338,17 @@ describe("/api/users", () => {
                     expect(users[0]).toEqual({username: 'butter_bridge'})
                 })
         })
+    })
+})
+
+describe("/api", () => {
+    test("200: returns a JSON object listing the available endpoints", () => {
+        return request(app).get("/api")
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .then(({body}) => {
+                expect(body["GET /api"]).toBeDefined()
+            })
     })
 })
 

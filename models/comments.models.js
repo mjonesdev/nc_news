@@ -8,3 +8,16 @@ exports.fetchAllCommentsById = (id) => {
             return rows
         })
 }
+
+exports.insertComment = (id, requestBody) => {
+    const {username, body} = requestBody
+    return db.query(`INSERT INTO comments (body, author, article_id) 
+                    VALUES ($1, $2, $3) RETURNING *;`, [body, username, id])
+        .then(({rows}) => {
+            return rows[0]
+        })
+}
+
+exports.removeCommentById = (id) => {
+    return db.query("DELETE FROM comments WHERE comment_id=$1;", [id])
+}

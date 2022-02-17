@@ -18,7 +18,6 @@ exports.fetchAllArticles = (sorted_by = "created_at", order = "desc", topic) => 
             status: "051"
         })
     }
-
 }
 
 exports.fetchArticleById = (id) => {
