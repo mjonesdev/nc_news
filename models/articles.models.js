@@ -10,9 +10,10 @@ exports.fetchAllArticles = (sorted_by = "created_at", order = "desc", topic) => 
         }
         queryString += `GROUP BY a.article_id ORDER BY ${sorted_by} ${order};`
         return db.query(queryString, queryValues)
-            .then(({
-                rows
-            }) => rows)
+            .then(({rows}) => {
+                rows.forEach(article => article.comment_count = Number(article.comment_count))
+                return rows
+            })
     } else {
         return Promise.reject({
             status: "051"

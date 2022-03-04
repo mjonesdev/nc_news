@@ -54,7 +54,7 @@ describe("/api/articles", () => {
             return request(app).get("/api/articles/notANumber")
                 .expect(400)
                 .then(({body}) => {
-                    expect(body.msg).toBe("Article ID passed is not a number")
+                    expect(body.msg).toBe("ID passed is not a number")
                 })
         })
         test("404: should return an article not found msg when passed a number that is not an article ID", () => {
@@ -80,7 +80,7 @@ describe("/api/articles", () => {
                     }))
                 })
         })
-        test("200: returns all articles in decending date order", () => {
+        test("200: returns all articles in descending date order", () => {
             return request(app).get("/api/articles")
                 .expect(200)
                 .then(({body: {articles}}) => {
@@ -239,7 +239,7 @@ describe('/api/articles/:article_id/comments', () => {
             return request(app).get('/api/articles/notANumber/comments')
                 .expect(400)
                 .then(({body}) => {
-                    expect(body.msg).toBe("Article ID passed is not a number")
+                    expect(body.msg).toBe("ID passed is not a number")
                 })
         })
         test("404: should return an article does not exist message if passed an ID that is not in use", () => {
@@ -289,7 +289,7 @@ describe('/api/articles/:article_id/comments', () => {
                 .send(data)
                 .expect(404)
                 .then(({body}) => {
-                    expect(body.msg).toBe("Resource not found")
+                    expect(body.msg).toBe("50 not found in article_id")
                 })
         })
     })
@@ -310,14 +310,14 @@ describe('/api/articles/:article_id/comments', () => {
             return request(app).delete("/api/comments/50")
                 .expect(404)
                 .then(({body}) => {
-                    expect(body.msg).toBe("Resource not found")
+                    expect(body.msg).toBe("50 not found in comment_id")
                 })
         })
         test("400: returns a bad request msg when passed a comment_id that is not a number", () => {
             return request(app).delete("/api/comments/notANumber")
                 .expect(400)
                 .then(({body}) => {
-                    expect(body.msg).toBe("ID passed not a number")
+                    expect(body.msg).toBe("ID passed is not a number")
                 })
         })
     })
