@@ -39,5 +39,7 @@ These will enable to the correct seeding of the PostgreSQL database.
 
 ## Minimum versions of software
 
-Node.JS: 
-PostgreSQL: 
+Node.JS: 17.1.0
+PostgreSQL: 14.2
+
+Not tested on earlier versions
