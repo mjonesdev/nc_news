@@ -5,8 +5,10 @@ const {getUsers} = require("./controllers/users.controllers.js")
 const {getCommentsByArticleId, postComment, deleteCommentById} = require("./controllers/comments.controllers")
 const {getApiInformation} = require("./controllers/api.controllers")
 const {serverErrorHandler, psqlErrorHandler, customErrorHandler} = require("./controllers/errors.controllers")
+const cors = require('cors');
 
 const app = express()
+app.use(cors());
 app.use(express.json())
 
 // Controllers
