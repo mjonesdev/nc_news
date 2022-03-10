@@ -265,12 +265,13 @@ describe('/api/articles/:article_id/comments', () => {
                 .expect(201)
                 .then(({body: {comment}}) => {
                     expect(comment).toEqual(expect.objectContaining({
-                        comment_id: expect.any(Number),
-                        body: "testComment",
-                        votes: 0,
-                        author: 'butter_bridge',
-                        article_id: 2,
-                        created_at: expect.any(String)})
+                            comment_id: expect.any(Number),
+                            body: "testComment",
+                            votes: 0,
+                            author: 'butter_bridge',
+                            article_id: 2,
+                            created_at: expect.any(String)
+                        })
                     )
                 })
         })
