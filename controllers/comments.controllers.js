@@ -1,4 +1,4 @@
-const {fetchAllCommentsById, insertComment, removeCommentById} = require("../models/comments.models")
+const {fetchAllCommentsById, insertComment, removeCommentById, updateCommentById} = require("../models/comments.models")
 const {checkExists} = require("../db/helpers/utils")
 
 exports.getCommentsByArticleId = (req, res, next) => {
@@ -27,5 +27,15 @@ exports.deleteCommentById = (req, res, next) => {
             return removeCommentById(id)
         }).then(() => {
             res.status(204).end()
+    }).catch(next)
+}
+
+exports.patchCommentById = (req,res, next) => {
+    const id = req.params.comment_id
+    const body = req.body
+    updateCommentById(id, body).then(comment => {
+        res.status(200).send({
+            comment
+        })
     }).catch(next)
 }

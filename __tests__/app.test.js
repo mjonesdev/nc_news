@@ -323,6 +323,61 @@ describe('/api/articles/:article_id/comments', () => {
     })
 });
 
+describe('/api/comments/:comment_id', () => {
+    describe("PATCH", () => {
+        test("200: should return the updated object when passed a positive number", () => {
+            const data = {inc_votes: 1}
+            return request(app).patch("/api/comments/9")
+                .send(data)
+                .expect(200)
+                .then(({body: {comment}}) => {
+                    expect(comment).toEqual(expect.objectContaining({
+                        author: "icellusedkars",
+                        comment_id: 9,
+                        article_id: 1,
+                        body: "Superficially charming",
+                        created_at: expect.any(String),
+                        votes: 1
+                    }))
+                })
+        })
+        test("200: should return the updated object when passed a negative number", () => {
+            const data = {inc_votes: -2}
+            return request(app).patch("/api/comments/9")
+                .send(data)
+                .expect(200)
+                .then(({body: {comment}}) => {
+                    expect(comment).toEqual(expect.objectContaining({
+                        author: "icellusedkars",
+                        comment_id: 9,
+                        article_id: 1,
+                        body: "Superficially charming",
+                        created_at: expect.any(String),
+                        votes: -2
+                    }))
+                })
+        })
+        test("400: should send back a bad request message when passed body information that does not include the required information", () => {
+            const data = {notTheRightKey: "test"}
+            return request(app).patch("/api/comments/9")
+                .send(data)
+                .expect(400)
+                .then(({body}) => {
+                    expect(body.msg).toBe("Bad request: required data not supplied correctly")
+                })
+        })
+        test("404: return that the comment has not been found if passed correct data but an ID that does not exist in the database", () => {
+            const data = {inc_votes: 1}
+            return request(app).patch("/api/comments/500")
+                .send(data)
+                .expect(404)
+                .then(({body}) => {
+                    expect(body.msg).toBe("Article not found")
+                })
+        })
+    })
+})
+
 describe("/api/users", () => {
     describe("GET", () => {
         test("200: get back an array of objects", () => {
