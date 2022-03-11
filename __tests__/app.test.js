@@ -121,6 +121,15 @@ describe("/api/articles", () => {
                     })
                 })
         })
+        test("200: returns the articles sorted by comment_count, defaulting to date", () => {
+            return request(app).get("/api/articles?sorted_by=comment_count")
+                .expect(200)
+                .then(({body: {articles}}) => {
+                    expect(articles).toBeSortedBy('comment_count', {
+                        descending: true
+                    })
+                })
+        })
         test("400: returns a bad request msg when passed a column title that does not exist", () => {
             return request(app).get("/api/articles?sorted_by=notAColumn")
                 .expect(400)

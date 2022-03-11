@@ -1,7 +1,7 @@
 const db = require('../db/connection');
 
 exports.fetchAllArticles = (sorted_by = "created_at", order = "desc", topic) => {
-    if (["author", "title", "article_id", "topic", "created_at", "votes"].includes(sorted_by) && ['desc', 'asc'].includes(order)) {
+    if (["author", "title", "article_id", "topic", "created_at", "votes", "comment_count"].includes(sorted_by) && ['desc', 'asc'].includes(order)) {
         const queryValues = []
         let queryString = 'SELECT a.author, a.title, a.article_id, a.topic, a.created_at, a.votes, COUNT(comment_id) AS comment_count FROM articles AS a LEFT JOIN comments USING (article_id)'
         if (topic) {
